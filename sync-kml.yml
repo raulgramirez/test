@@ -1,0 +1,68 @@
+name: Sync KML to GitHub Pages
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # cada 30 minutos (ajusta a tu frecuencia)
+  workflow_dispatch:          # permite ejecutarlo manualmente
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout KML branch (Pages)
+        uses: actions/checkout@v4
+        with:
+          ref: KML
+
+      - name: Set variables
+        id: vars
+        run: |
+          # 👉 EDITA esta URL de origen:
+          echo "SRC_URL=https://www.wpc.ncep.noaa.gov/pwpf_72hr/kml/snow/prb_72hsnow_ge02_2026020412f072_40pct.kml" >> $GITHUB_OUTPUT
+          # Nombre base (opcionalmente dinámico por fecha/hora)
+          echo "DST_NAME=prb_72hsnow_ge02_2026020412f072_40pct.kml" >> $GITHUB_OUTPUT
+          # Alternativa con timestamp (descomenta si quieres múltiples versiones)
+          # echo "DST_NAME=snow_$(date -u +'%Y%m%d%H%M%S').kml" >> $GITHUB_OUTPUT
+
+      - name: Download KML
+        run: |
+          curl -fSL --max-time 60 "${{ steps.vars.outputs.SRC_URL }}" -o incoming.kml
+          # Validaciones básicas
+          BYTES=$(wc -c < incoming.kml | tr -d ' ')
+          echo "Bytes: $BYTES"
+          if [ "$BYTES" -lt 200 ]; then
+            echo "Archivo demasiado pequeño. Abortando."; exit 1
+          fi
+          # Verifica que NO sea HTML
+          head -c 256 incoming.kml | grep -qi "<html" && { echo "La fuente devolvió HTML. Abortando."; exit 1; }
+          head -c 256 incoming.kml | grep -qi "<!DOCTYPE" && { echo "HTML detectado. Abortando."; exit 1; }
+
+      - name: Skip if identical (avoid duplicates)
+        id: dedup
+        run: |
+          DST="${{ steps.vars.outputs.DST_NAME }}"
+          if [ -f "$DST" ]; then
+            if cmp -s incoming.kml "$DST"; then
+              echo "skip=true" >> $GITHUB_OUTPUT
+              echo "El archivo ya existe sin cambios. Omitiendo commit."
+              exit 0
+            fi
+          fi
+          echo "skip=false" >> $GITHUB_OUTPUT
+
+      - name: Commit file
+        if: steps.dedup.outputs.skip == 'false'
+        run: |
+          DST="${{ steps.vars.outputs.DST_NAME }}"
+          cp incoming.kml "$DST"
+          # (Opcional) mantener alias al último disponible
+          cp incoming.kml latest.kml
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "$DST" latest.kml
+          git commit -m "Update KML: $DST"
+          git push origin KML
