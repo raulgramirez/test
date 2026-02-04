@@ -2,8 +2,8 @@ name: Sync KML to GitHub Pages
 
 on:
   schedule:
-    - cron: "*/30 * * * *"   # cada 30 minutos (ajusta a tu frecuencia)
-  workflow_dispatch:          # permite ejecutarlo manualmente
+    - cron: "*/30 * * * *"   # Ejecuta cada 30 minutos (ajústalo si quieres)
+  workflow_dispatch:          # Permite ejecutarlo manualmente desde Actions
 
 permissions:
   contents: write
@@ -12,7 +12,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout KML branch (Pages)
+      - name: Checkout KML branch
         uses: actions/checkout@v4
         with:
           ref: KML
@@ -20,29 +20,33 @@ jobs:
       - name: Set variables
         id: vars
         run: |
-          # 👉 EDITA esta URL de origen:
+          # 👉 Cambia esta URL por tu fuente original real
           echo "SRC_URL=https://www.wpc.ncep.noaa.gov/pwpf_72hr/kml/snow/prb_72hsnow_ge02_2026020412f072_40pct.kml" >> $GITHUB_OUTPUT
-          # Nombre base (opcionalmente dinámico por fecha/hora)
+
+          # Nombre de destino en el branch KML (puede ser fijo o con timestamp)
           echo "DST_NAME=prb_72hsnow_ge02_2026020412f072_40pct.kml" >> $GITHUB_OUTPUT
-          # Alternativa con timestamp (descomenta si quieres múltiples versiones)
+          # Si prefieres versionar por fecha/hora, usa:
           # echo "DST_NAME=snow_$(date -u +'%Y%m%d%H%M%S').kml" >> $GITHUB_OUTPUT
 
-      - name: Download KML
+      - name: Download & basic validate
         run: |
+          set -euxo pipefail
+
+          # Descarga del KML
           curl -fSL --max-time 60 "${{ steps.vars.outputs.SRC_URL }}" -o incoming.kml
-          # Validaciones básicas
+
+          # Validación mínima de tamaño (evita subir archivos vacíos o truncados)
           BYTES=$(wc -c < incoming.kml | tr -d ' ')
           echo "Bytes: $BYTES"
           if [ "$BYTES" -lt 200 ]; then
-            echo "Archivo demasiado pequeño. Abortando."; exit 1
+            echo "Archivo demasiado pequeño. Abortando."
+            exit 1
           fi
-          # Verifica que NO sea HTML
-          head -c 256 incoming.kml | grep -qi "<html" && { echo "La fuente devolvió HTML. Abortando."; exit 1; }
-          head -c 256 incoming.kml | grep -qi "<!DOCTYPE" && { echo "HTML detectado. Abortando."; exit 1; }
 
-      - name: Skip if identical (avoid duplicates)
+      - name: Skip if identical (avoid duplicate commit)
         id: dedup
         run: |
+          set -euo pipefail
           DST="${{ steps.vars.outputs.DST_NAME }}"
           if [ -f "$DST" ]; then
             if cmp -s incoming.kml "$DST"; then
@@ -56,9 +60,11 @@ jobs:
       - name: Commit file
         if: steps.dedup.outputs.skip == 'false'
         run: |
+          set -euo pipefail
           DST="${{ steps.vars.outputs.DST_NAME }}"
+
+          # Copia al destino y actualiza alias 'latest.kml'
           cp incoming.kml "$DST"
-          # (Opcional) mantener alias al último disponible
           cp incoming.kml latest.kml
 
           git config user.name  "github-actions[bot]"
