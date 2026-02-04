@@ -1,9 +1,12 @@
-name: Sync KML to GitHub Pages
+name: Sync KML to GitHub Pages (6am & 2pm ET)
 
 on:
   schedule:
-    - cron: "*/30 * * * *"   # cada 30 minutos (ajusta a tu frecuencia)
-  workflow_dispatch:          # permite ejecutarlo manualmente
+    # 11:00 UTC ≈ 6:00 AM Eastern (EST). En DST será 7:00 AM ET.
+    - cron: "0 11 * * *"
+    # 20:00 UTC ≈ 3:00 PM Eastern (EST). En DST será 4:00 PM ET.
+    - cron: "0 20 * * *"
+  workflow_dispatch:   # Permite ejecutarlo manualmente
 
 permissions:
   contents: write
@@ -12,57 +15,64 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout KML branch (Pages)
+      - name: Checkout KML branch
         uses: actions/checkout@v4
         with:
           ref: KML
 
-      - name: Set variables
+      - name: Build source URL (today in US/Eastern)
         id: vars
         run: |
-          # 👉 EDITA esta URL de origen:
-          echo "SRC_URL=https://www.wpc.ncep.noaa.gov/pwpf_72hr/kml/snow/prb_72hsnow_ge02_2026020412f072_40pct.kml" >> $GITHUB_OUTPUT
-          # Nombre base (opcionalmente dinámico por fecha/hora)
-          echo "DST_NAME=prb_72hsnow_ge02_2026020412f072_40pct.kml" >> $GITHUB_OUTPUT
-          # Alternativa con timestamp (descomenta si quieres múltiples versiones)
-          # echo "DST_NAME=snow_$(date -u +'%Y%m%d%H%M%S').kml" >> $GITHUB_OUTPUT
+          set -euo pipefail
 
-      - name: Download KML
+          # Calcula la fecha de HOY en US/Eastern (YYYYMMDD)
+          TZ="America/New_York" date +'%Y-%m-%d %H:%M:%S %Z'
+          TODAY_LOCAL=$(TZ="America/New_York" date +'%Y%m%d')
+          echo "Hoy (ET): $TODAY_LOCAL"
+
+          # Construye la URL del día: prb_72hsnow_ge02_YYYYMMDD12f072_40pct.kml
+          # Solo la parte YYYYMMDD es variable; el '12' del nombre lo dejamos fijo como en tu ejemplo.
+          SRC_URL="https://www.wpc.ncep.noaa.gov/pwpf_72hr/kml/snow/prb_72hsnow_ge02_${TODAY_LOCAL}12f072_40pct.kml"
+          echo "SRC_URL=$SRC_URL" >> $GITHUB_OUTPUT
+
+          # Nombre destino (versión por fecha) y alias:
+          DST_NAME="prb_72hsnow_ge02_${TODAY_LOCAL}12f072_40pct.kml"
+          echo "DST_NAME=$DST_NAME" >> $GITHUB_OUTPUT
+
+      - name: Download & basic validate
         run: |
+          set -euxo pipefail
+          echo "Descargando: ${{ steps.vars.outputs.SRC_URL }}"
           curl -fSL --max-time 60 "${{ steps.vars.outputs.SRC_URL }}" -o incoming.kml
-          # Validaciones básicas
+
           BYTES=$(wc -c < incoming.kml | tr -d ' ')
           echo "Bytes: $BYTES"
           if [ "$BYTES" -lt 200 ]; then
-            echo "Archivo demasiado pequeño. Abortando."; exit 1
+            echo "Archivo demasiado pequeño. Abortando."
+            exit 1
           fi
-          # Verifica que NO sea HTML
-          head -c 256 incoming.kml | grep -qi "<html" && { echo "La fuente devolvió HTML. Abortando."; exit 1; }
-          head -c 256 incoming.kml | grep -qi "<!DOCTYPE" && { echo "HTML detectado. Abortando."; exit 1; }
 
-      - name: Skip if identical (avoid duplicates)
-        id: dedup
+      - name: Write files (always refresh latest.kml)
         run: |
+          set -euo pipefail
           DST="${{ steps.vars.outputs.DST_NAME }}"
-          if [ -f "$DST" ]; then
-            if cmp -s incoming.kml "$DST"; then
-              echo "skip=true" >> $GITHUB_OUTPUT
-              echo "El archivo ya existe sin cambios. Omitiendo commit."
-              exit 0
-            fi
-          fi
-          echo "skip=false" >> $GITHUB_OUTPUT
 
-      - name: Commit file
-        if: steps.dedup.outputs.skip == 'false'
-        run: |
-          DST="${{ steps.vars.outputs.DST_NAME }}"
+          # Guarda copia con nombre del día (YYYYMMDD...) y actualiza 'latest.kml'
           cp incoming.kml "$DST"
-          # (Opcional) mantener alias al último disponible
           cp incoming.kml latest.kml
 
+      - name: Commit & push if changed
+        run: |
+          set -euo pipefail
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add "$DST" latest.kml
-          git commit -m "Update KML: $DST"
-          git push origin KML
+
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No hay cambios para commitear (contenido idéntico)."
+            exit 0
+          else
+            TS=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            git commit -m "Update KML (${TS})"
+            git push origin KML
+          fi
