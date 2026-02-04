@@ -1,12 +1,9 @@
-name: Sync KML to GitHub Pages (3:20pm ET exact)
+name: Sync KML to GitHub Pages (hourly)
 
 on:
   schedule:
-    # 20:20 UTC ≈ 3:20 PM EST (invierno)
-    - cron: "20 20 * * *"
-    # 19:20 UTC ≈ 3:20 PM EDT (verano)
-    - cron: "20 19 * * *"
-  workflow_dispatch:   # Permite ejecutarlo manualmente
+    - cron: "0 * * * *"  # Cada hora en el minuto 0 (UTC)
+  workflow_dispatch:      # Permite ejecutarlo manualmente
 
 permissions:
   contents: write
@@ -21,18 +18,6 @@ jobs:
           echo "UTC now:      $(date -u +'%Y-%m-%d %H:%M:%S %Z')"
           echo "Eastern now:  $(TZ='America/New_York' date +'%Y-%m-%d %H:%M:%S %Z')"
 
-      # 🔒 Gate: solo continuar si AHORA en Eastern es 15:20
-      - name: Enforce exact 15:20 ET
-        shell: bash
-        run: |
-          HR=$(TZ="America/New_York" date +'%H')
-          MN=$(TZ="America/New_York" date +'%M')
-          if [ "$HR" != "15" ] || [ "$MN" != "20" ]; then
-            echo "No es exactamente 15:20 ET. Saliendo (HR=$HR MN=$MN)."
-            exit 0
-          fi
-          echo "Es 15:20 ET. Continuamos..."
-
       - name: Checkout KML branch
         uses: actions/checkout@v4
         with:
@@ -43,8 +28,51 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # Fecha local en Eastern para construir YYYYMMDD
           TODAY_LOCAL=$(TZ="America/New_York" date +'%Y%m%d')
           echo "Hoy (ET): $TODAY_LOCAL"
 
           # Patrón: prb_72hsnow_ge02_YYYYMMDD12f072_40pct.kml
           SRC_URL="https://www.wpc.ncep.noaa.gov/pwpf_72hr/kml/snow/prb_72hsnow_ge02_${TODAY_LOCAL}12f072_40pct.kml"
+          DST_NAME="prb_72hsnow_ge02_${TODAY_LOCAL}12f072_40pct.kml"
+
+          echo "SRC_URL=$SRC_URL"   >> $GITHUB_OUTPUT
+          echo "DST_NAME=$DST_NAME" >> $GITHUB_OUTPUT
+
+      - name: Download & basic validate
+        shell: bash
+        run: |
+          set -euxo pipefail
+          echo "Descargando: ${{ steps.vars.outputs.SRC_URL }}"
+          curl -fSL --max-time 60 "${{ steps.vars.outputs.SRC_URL }}" -o incoming.kml
+
+          BYTES=$(wc -c < incoming.kml | tr -d ' ')
+          echo "Bytes: $BYTES"
+          if [ "$BYTES" -lt 200 ]; then
+            echo "Archivo demasiado pequeño. Abortando."
+            exit 1
+          fi
+
+      - name: Write files (always refresh latest.kml)
+        shell: bash
+        run: |
+          set -euo pipefail
+          DST="${{ steps.vars.outputs.DST_NAME }}"
+          cp incoming.kml "$DST"
+          cp incoming.kml latest.kml
+
+      - name: Commit & push if changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No hay cambios para commitear."
+            exit 0
+          else
+            TS=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            git commit -m "Update KML (${TS})"
+            git push origin KML
+          fi
