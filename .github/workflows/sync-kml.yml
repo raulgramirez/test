@@ -20,19 +20,17 @@ jobs:
       - name: Set variables
         id: vars
         run: |
-          # 👉 Cambia esta URL por tu fuente original real
+          # 👉 Cambia esta URL por tu fuente original real (si cambia el nombre, actualiza aquí)
           echo "SRC_URL=https://www.wpc.ncep.noaa.gov/pwpf_72hr/kml/snow/prb_72hsnow_ge02_2026020412f072_40pct.kml" >> $GITHUB_OUTPUT
 
-          # Nombre de destino en el branch KML (puede ser fijo o con timestamp)
+          # Nombre de destino con el que también quieres conservar una copia fija (opcional)
           echo "DST_NAME=prb_72hsnow_ge02_2026020412f072_40pct.kml" >> $GITHUB_OUTPUT
-          # Si prefieres versionar por fecha/hora, usa:
+          # Si prefieres versionado por timestamp, usa:
           # echo "DST_NAME=snow_$(date -u +'%Y%m%d%H%M%S').kml" >> $GITHUB_OUTPUT
 
       - name: Download & basic validate
         run: |
           set -euxo pipefail
-
-          # Descarga del KML
           curl -fSL --max-time 60 "${{ steps.vars.outputs.SRC_URL }}" -o incoming.kml
 
           # Validación mínima de tamaño (evita subir archivos vacíos o truncados)
@@ -43,32 +41,34 @@ jobs:
             exit 1
           fi
 
-      - name: Skip if identical (avoid duplicate commit)
-        id: dedup
-        run: |
-          set -euo pipefail
-          DST="${{ steps.vars.outputs.DST_NAME }}"
-          if [ -f "$DST" ]; then
-            if cmp -s incoming.kml "$DST"; then
-              echo "skip=true" >> $GITHUB_OUTPUT
-              echo "El archivo ya existe sin cambios. Omitiendo commit."
-              exit 0
-            fi
-          fi
-          echo "skip=false" >> $GITHUB_OUTPUT
-
-      - name: Commit file
-        if: steps.dedup.outputs.skip == 'false'
+      - name: Write files (always refresh latest.kml)
         run: |
           set -euo pipefail
           DST="${{ steps.vars.outputs.DST_NAME }}"
 
-          # Copia al destino y actualiza alias 'latest.kml'
+          # Siempre sobrescribe el archivo de nombre fijo (si lo quieres conservar)
           cp incoming.kml "$DST"
+
+          # Siempre actualiza el alias del último disponible
           cp incoming.kml latest.kml
+
+      - name: Commit & push if changed
+        run: |
+          set -euo pipefail
 
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add "$DST" latest.kml
-          git commit -m "Update KML: $DST"
-          git push origin KML
+
+          # Agrega cambios (si los hay)
+          git add -A
+
+          # Solo commitea si hay diferencias indexadas
+          if git diff --cached --quiet; then
+            echo "No hay cambios para commitear (contenido idéntico)."
+            exit 0
+          else
+            # (Opcional) marca la hora en el mensaje
+            TS=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            git commit -m "Update KML ($TS)"
+            git push origin KML
+          fi
