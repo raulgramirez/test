@@ -1,9 +1,9 @@
-name: Sync KML to GitHub Pages (hourly)
+name: Sync KML to GitHub Pages (cada 6 horas)
 
 on:
   schedule:
-    - cron: "0 * * * *"  # Cada hora en el minuto 0 (UTC)
-  workflow_dispatch:      # Permite ejecutarlo manualmente
+    - cron: "0 */6 * * *"   # Cada 6 horas (UTC)
+  workflow_dispatch:         # Permite ejecutarlo manualmente
 
 permissions:
   contents: write
