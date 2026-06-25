@@ -3,7 +3,7 @@
 <Document id="prb_72hsnow_ge02_f072">
 <name>WPC 72-Hr Prob of Snow > 2"</name>
   <open>1</open>
-  <snippet>Valid 12Z 06/24/2026 - 12Z 06/27/2026</snippet>
+  <snippet>Valid 12Z 06/25/2026 - 12Z 06/28/2026</snippet>
   <description></description>
     <Style id="poly_1">
         <IconStyle>
@@ -349,16 +349,3 @@
    <rotationXY x="0" y="0" xunits="fraction" yunits="fraction" />
    <size x="-1" y="-1" xunits="fraction" yunits="fraction" />
   </ScreenOverlay>
-  <ScreenOverlay>
-    <name>Probabilistic Winter Weather Forecast</name>
-    <description></description>
-    <Icon>
-      <href>https://www.wpc.ncep.noaa.gov/images/no_snow_over_2Inches.png</href>
-    </Icon>
-    <overlayXY x=".50" y=".65" xunits="fraction" yunits="fraction" />
-    <screenXY x=".50" y=".65" xunits="fraction" yunits="fraction" />
-    <rotationXY x="0" y="0" xunits="fraction" yunits="fraction" />
-    <size x="-1" y="-1" xunits="fraction" yunits="fraction" />
-  </ScreenOverlay>
-</Document>
-</kml>
