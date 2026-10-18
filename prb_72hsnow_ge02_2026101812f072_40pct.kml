@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="prb_72hsnow_ge02_f072">
+<name>WPC 72-Hr Prob of Snow > 2"</name>
+  <open>1</open>
+  <snippet>Valid 12Z 10/18/2026 - 12Z 10/21/2026</snippet>
+  <description></description>
+    <Style id="poly_1">
+        <IconStyle>
+           <color>00000000</color>
+           <scale>1</scale>
+        </IconStyle>
+        <LabelStyle>
+            <color>ff26478b</color>
+            <scale>0.8</scale>
+        </LabelStyle>
+        <LineStyle>
+            <color>6626478b</color>
+            <width>0</width>
+        </LineStyle>
+	<PolyStyle>
+            <color>6626478b</color>
+	</PolyStyle>
+        <BalloonStyle>
+            <text>
+                <![CDATA[ <table border=0 width="300"><tr><td style="font-size:10pt;">
+                During this forecast period, there is a <b>1-5%</b> probability of snowfall exceeding the depicted amount in the enclosed area.
+                <br/><br/>
+                *<span style="font-size:8pt;">Note that in cases where this contour is embedded within a 5% contour, 
+                the probability of snowfall exceeding the depicted amount is &lt;1%.</span>
+                </td></tr></table>]]>
+            </text>
+        </BalloonStyle>
+    </Style>
+
+    <Style id="poly_5">
+        <IconStyle>
+           <color>00000000</color>
+           <scale>1</scale>
+        </IconStyle>
+        <LabelStyle>
+            <color>ff00eeee</color>
+            <scale>0.8</scale>
+        </LabelStyle>
+        <LineStyle>
+            <color>6600eeee</color>
+            <width>0.4</width>
+        </LineStyle>
+	<PolyStyle>
+	    <color>6600eeee</color>
+	</PolyStyle>
+        <BalloonStyle>
+            <text>
+                <![CDATA[ <table border=0 width="300"><tr><td style="font-size:10pt;">
+                During this forecast period, there is a <b>5-10%</b> probability of snowfall exceeding the depicted amount in the enclosed area.
+                <br/><br/>
+                *<span style="font-size:8pt;">Note that in cases where this contour is embedded within a 10% contour, 
+                the probability of snowfall exceeding the depicted amount is &lt;5%.</span>
+                </td></tr></table>]]>
+            </text>
+        </BalloonStyle>
+    </Style>
+
+    <Style id="poly_10">
+        <IconStyle>
+           <color>00000000</color>
+           <scale>1</scale>
+        </IconStyle>
+        <LabelStyle>
+            <color>ff00ff7f</color>
+            <scale>0.8</scale>
+        </LabelStyle>
+        <LineStyle>
+            <color>6600ff7f</color>
+            <width>0.4</width>
+        </LineStyle>
+	<PolyStyle>
+	    <color>6600ff7f</color>
+	</PolyStyle>
+        <BalloonStyle>
+            <text>
+                <![CDATA[ <table border=0 width="300"><tr><td style="font-size:10pt;">
+                During this forecast period, there is a <b>10-20%</b> probability of snowfall exceeding the depicted amount in the enclosed area.
+                <br/><br/>
+                *<span style="font-size:8pt;">Note that in cases where this contour is embedded within a 20% contour, 
+                the probability of snowfall exceeding the depicted amount is &lt;10%.</span>
+                </td></tr></table>]]>
+            </text>
+        </BalloonStyle>
+    </Style>
+    
+    <Style id="poly_20">
+        <IconStyle>
+            <color>00000000</color>
+            <scale>1</scale>
+        </IconStyle>
+        <LabelStyle>
+            <color>ff00cd00</color>
+            <scale>0.8</scale>
+        </LabelStyle>
+        <LineStyle>
+            <color>6600cd00</color>
+	    <width>0.4</width>
+	</LineStyle>
+	<PolyStyle>
+	    <color>6600cd00</color>
+	</PolyStyle>
+        <BalloonStyle>
+            <text>
+                <![CDATA[ <table border=0 width="300"><tr><td style="font-size:10pt;">
+                During this forecast period, there is a <b>20-30%</b> probability of snowfall exceeding the depicted amount in the enclosed area.
+                <br/><br/>
+                *<span style="font-size:8pt;">Note that in cases where this contour is embedded within a 30% contour, 
+                the probability of snowfall exceeding the depicted amount is &lt;20%.</span>
+                </td></tr></table>]]>
+            </text>
+        </BalloonStyle>
+    </Style>
+
+    <Style id="poly_30">
+        <IconStyle>
+            <color>00000000</color>
+            <scale>1</scale>
+        </IconStyle>
+        <LabelStyle>
+            <color>ff008b00</color>
+            <scale>0.8</scale>
+        </LabelStyle>
+        <LineStyle>
+            <color>66008b00</color>
+	    <width>0.4</width>
+	</LineStyle>
+	<PolyStyle>
+	    <color>66008b00</color>
+	</PolyStyle>
+        <BalloonStyle>
+            <text>
+                <![CDATA[ <table border=0 width="300"><tr><td style="font-size:10pt;">
+                During this forecast period, there is a <b>30-40%</b> probability of snowfall exceeding the depicted amount in the enclosed area.
+                <br/><br/>
+                *<span style="font-size:8pt;">Note that in cases where this contour is embedded within a 40% contour, 
+                the probability of snowfall exceeding the depicted amount is &lt;30%.</span>
+                </td></tr></table>]]>
+            </text>
+        </BalloonStyle>
+    </Style>
+
+    <Style id="poly_40">
+        <IconStyle>
+            <color>00000000</color>
+            <scale>1</scale>
+        </IconStyle>
+        <LabelStyle>
+            <color>ff8b4e10</color>
+            <scale>0.8</scale>
+        </LabelStyle>
+        <LineStyle>
+            <color>668b4e10</color>
+	    <width>0.4</width>
+	</LineStyle>
+	<PolyStyle>
+	    <color>668b4e10</color>
+	</PolyStyle>
+        <BalloonStyle>
+            <text>
+                <![CDATA[ <table border=0 width="300"><tr><td style="font-size:10pt;">
+                During this forecast period, there is a <b>40-50%</b> probability of snowfall exceeding the depicted amount in the enclosed area.
+                <br/><br/>
+                *<span style="font-size:8pt;">Note that in cases where this contour is embedded within a 50% contour, 
+                the probability of snowfall exceeding the depicted amount is &lt;40%.</span>
+                </td></tr></table>]]>
+            </text>
+        </BalloonStyle>
+    </Style>
+
+    <Style id="poly_50">
+        <IconStyle>
+            <color>00000000</color>
+            <scale>1</scale>
+        </IconStyle>
+        <LabelStyle>
+            <color>ffff901e</color>
+            <scale>0.8</scale>
+        </LabelStyle>
+        <LineStyle>
+            <color>66ff901e</color>
+	    <width>0.4</width>
+	</LineStyle>
+	<PolyStyle>
+	    <color>66ff901e</color>
+	</PolyStyle>
+        <BalloonStyle>
+            <text>
+                <![CDATA[ <table border=0 width="300"><tr><td style="font-size:10pt;">
+                During this forecast period, there is a <b>50-60%</b> probability of snowfall exceeding the depicted amount in the enclosed area.
+                <br/><br/>
+                *<span style="font-size:8pt;">Note that in cases where this contour is embedded within a 60% contour, 
+                the probability of snowfall exceeding the depicted amount is &lt;50%.</span>
+                </td></tr></table>]]>
+            </text>
+        </BalloonStyle>
+    </Style>
+
+    <Style id="poly_60">
+        <IconStyle>
+            <color>00000000</color>
+            <scale>1</scale>
+        </IconStyle>
+        <LabelStyle>
+            <color>ffeeb200</color>
+            <scale>0.8</scale>
+        </LabelStyle>
+        <LineStyle>
+            <color>66eeb200</color>
+	    <width>0.4</width>
+	</LineStyle>
+	<PolyStyle>
+	    <color>66eeb200</color>
+	</PolyStyle>
+        <BalloonStyle>
+            <text>
+                <![CDATA[ <table border=0 width="300"><tr><td style="font-size:10pt;">
+                During this forecast period, there is a <b>60-70%</b> probability of snowfall exceeding the depicted amount in the enclosed area.
+                <br/><br/>
+                *<span style="font-size:8pt;">Note that in cases where this contour is embedded within a 70% contour, 
+                the probability of snowfall exceeding the depicted amount is &lt;60%.</span>
+                </td></tr></table>]]>
+            </text>
+        </BalloonStyle>
+    </Style>
+    
+    <Style id="poly_70">
+        <IconStyle>
+            <color>00000000</color>
+            <scale>1</scale>
+        </IconStyle>
+        <LabelStyle>
+            <color>ffeeee00</color>
+            <scale>0.8</scale>
+        </LabelStyle>
+        <LineStyle>
+            <color>66eeee00</color>
+	    <width>0.4</width>
+	</LineStyle>
+	<PolyStyle>
+	    <color>66eeee00</color>
+	</PolyStyle>
+        <BalloonStyle>
+            <text>
+                <![CDATA[ <table border=0 width="300"><tr><td style="font-size:10pt;">
+                During this forecast period, there is a <b>70-80%</b> probability of snowfall exceeding the depicted amount in the enclosed area.
+                <br/><br/>
+                *<span style="font-size:8pt;">Note that in cases where this contour is embedded within a 80% contour, 
+                the probability of snowfall exceeding the depicted amount is &lt;70%.</span>
+                </td></tr></table>]]>
+            </text>
+        </BalloonStyle>
+    </Style>
+
+    <Style id="poly_80">
+        <IconStyle>
+            <color>00000000</color>
+            <scale>1</scale>
+        </IconStyle>
+        <LabelStyle>
+            <color>ff4782ff</color>
+            <scale>0.8</scale>
+        </LabelStyle>
+        <LineStyle>
+            <color>664782ff</color>
+	    <width>0.4</width>
+	</LineStyle>
+	<PolyStyle>
+	    <color>664782ff</color>
+	</PolyStyle>
+        <BalloonStyle>
+            <text>
+                <![CDATA[ <table border=0 width="300"><tr><td style="font-size:10pt;">
+                During this forecast period, there is a <b>80-90%</b> probability of snowfall exceeding the depicted amount in the enclosed area.
+                <br/><br/>
+                *<span style="font-size:8pt;">Note that in cases where this contour is embedded within a 90% contour, 
+                the probability of snowfall exceeding the depicted amount is &lt;80%.</span>
+                </td></tr></table>]]>
+            </text>
+        </BalloonStyle>
+    </Style>
+
+    <Style id="poly_90">
+        <IconStyle>
+            <color>00000000</color>
+            <scale>1</scale>
+        </IconStyle>
+        <LabelStyle>
+            <color>ff2c2cee</color>
+            <scale>0.8</scale>
+        </LabelStyle>
+        <LineStyle>
+            <color>662c2cee</color>
+            <width>0.4</width>
+        </LineStyle>
+        <PolyStyle>
+            <color>662c2cee</color>
+        </PolyStyle>
+        <BalloonStyle>
+            <text>
+                <![CDATA[ <table border=0 width="300"><tr><td style="font-size:10pt;">
+                During this forecast period, there is a <b>90-95%</b> probability of snowfall exceeding the depicted amount in the enclosed area.
+                <br/><br/>
+                *<span style="font-size:8pt;">Note that in cases where this contour is embedded within a 95% contour, 
+                the probability of snowfall exceeding the depicted amount is &lt;90%.</span>
+                </td></tr></table>]]>
+            </text>
+        </BalloonStyle>
+    </Style>
+
+    <Style id="poly_95">
+        <IconStyle>
+            <color>00000000</color>
+            <scale>1</scale>
+        </IconStyle>
+        <LabelStyle>
+            <color>ff00008b</color>
+            <scale>0.8</scale>
+        </LabelStyle>
+        <LineStyle>
+            <color>6600008b</color>
+	    <width>0.4</width>
+	</LineStyle>
+	<PolyStyle>
+	    <color>6600008b</color>
+	</PolyStyle>
+        <BalloonStyle>
+            <text>
+                <![CDATA[ <table border=0 width="300"><tr><td style="font-size:10pt;">
+                The probability of snowfall exceeding the depicted amount is <b>&ge;95%</b> in the enclosed area during this forecast period.
+                </td></tr></table>]]>
+            </text>
+        </BalloonStyle>
+    </Style>
+
+  <ScreenOverlay>
+    <name>Logos</name>
+    <description></description>
+    <Icon>
+      <href>https://www.wpc.ncep.noaa.gov/images/noaa_and_nws_logo.png</href>
+    </Icon>
+   <overlayXY x=".01" y=".01" xunits="fraction" yunits="fraction" />
+   <screenXY x=".01" y=".01" xunits="fraction" yunits="fraction" />
+   <rotationXY x="0" y="0" xunits="fraction" yunits="fraction" />
+   <size x="-1" y="-1" xunits="fraction" yunits="fraction" />
+  </ScreenOverlay>
+  <ScreenOverlay>
+    <name>Probabilistic Winter Weather Forecast</name>
+    <description></description>
+    <Icon>
+      <href>https://www.wpc.ncep.noaa.gov/images/no_snow_over_2Inches.png</href>
+    </Icon>
+    <overlayXY x=".50" y=".65" xunits="fraction" yunits="fraction" />
+    <screenXY x=".50" y=".65" xunits="fraction" yunits="fraction" />
+    <rotationXY x="0" y="0" xunits="fraction" yunits="fraction" />
+    <size x="-1" y="-1" xunits="fraction" yunits="fraction" />
+  </ScreenOverlay>
+</Document>
+</kml>
